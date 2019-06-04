@@ -28,6 +28,9 @@ with the __YAMAHA Musicsoft Downloader__, but not the other way around. To test 
 each with 5 tracks on my instrument. Then, I used the Musicsoft Downloader to transfer a new backup with my recorded user files to my
 computer. With the converter, I could revive 21 out of 25 possible midi files out of this backup. This and other problems are described
 in detail in the issues tab.
+## Known Issues
+- [Empty or not working midi files are converted](/../../issues/1)
+- [Not all user tracks are converted to midi files](/../../issues/2)
 ## Source
 I have used the algorithm shown on this site to program the converter:
 <https://habr.com/en/post/81831/>
