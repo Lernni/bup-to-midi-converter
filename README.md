@@ -26,7 +26,8 @@ to midi files on your computer.
 I've tested this converter with my _YAMAHA PSR E413_ backup files. Fortunately, I can transfer backups from my instrument to my computer
 with the __YAMAHA Musicsoft Downloader__, but not the other way around. To test the capability of the converter, I recorded all 5 user files
 each with 5 tracks on my instrument. Then, I used the Musicsoft Downloader to transfer a new backup with my recorded user files to my
-computer. With the converter, I could revive 21 out of 25 possible midi files out of this backup.
+computer. With the converter, I could revive 21 out of 25 possible midi files out of this backup. This and other problems are described
+in detail in the issues tab.
 ## Source
 I have used the algorithm shown on this site to program the converter:
 <https://habr.com/en/post/81831/>
