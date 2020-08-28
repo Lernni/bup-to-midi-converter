@@ -2,6 +2,8 @@ import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
@@ -58,8 +60,6 @@ public class Application extends JFrame {
     buttonPanel.setLayout(new FlowLayout());
     buttonPanel.add(convertButton);
 
-
-
     bar.setPreferredSize(new Dimension(0, 20));
     bar.setStringPainted(true);
     bar.setString("");
@@ -75,10 +75,16 @@ public class Application extends JFrame {
     this.pack();
     this.setLocationRelativeTo(null);
     this.setVisible(true);
+    this.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e) {
+        super.windowClosing(e);
+        System.exit(0);
+      }
+    });
   }
 
   public void chooseFile(boolean inorout) {
-
     fd.setTitle(inorout ? "Choose an input file..." : "Choose a destination dir and file name beginning...");
     fd.setDirectory(fdDir[inorout ? 0 : 1]);
     fd.setFile("");
@@ -88,7 +94,8 @@ public class Application extends JFrame {
     String extension = "";
     try {
       extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-    } catch (Exception ex) {}
+    } catch (Exception ex) {
+    }
 
     if (fileName != null) {
       if (inorout) { // Input
@@ -100,7 +107,7 @@ public class Application extends JFrame {
         } else {
           JOptionPane.showMessageDialog(this, "You can only choose '.bup'-Files!");
         }
-  
+
         fdDir[0] = fd.getDirectory();
       } else { // Output
         if (!fileName.contains(".")) {
@@ -109,7 +116,7 @@ public class Application extends JFrame {
         } else {
           JOptionPane.showMessageDialog(this, "You can only choose directories!");
         }
-  
+
         fdDir[1] = fd.getDirectory();
       }
     }
@@ -124,8 +131,7 @@ public class Application extends JFrame {
       }
       if (e.getSource() == convertButton) {
         if (inputFile.exists() && !(outputFile.isDirectory()) && outputFile.getParentFile().exists()) {
-          Thread convert = new Thread(new Convert(bar, inputFile, outputFile));
-          convert.start();
+          new Convert(bar, inputFile, outputFile).execute();
         }
       }
     }

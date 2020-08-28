@@ -5,11 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
 
-public class Convert implements Runnable {
-
+public class Convert extends SwingWorker<Void, Integer> {
   File input;
   File output;
   JProgressBar bar;
@@ -17,18 +19,19 @@ public class Convert implements Runnable {
   String midiHeader = "4D54686400000006000000010060";
   String mtrk = "4D54726B";
   String ende = "FF2F00";
+  int count;
 
   public Convert(JProgressBar bar, File input, File output) {
     this.input = input;
     this.output = output;
     this.bar = bar;
+    bar.setIndeterminate(true);
   }
-
+  
   @Override
-  public void run() {
+  protected Void doInBackground() throws Exception {
     // *** Read Input ***
     StringBuilder sbHex = new StringBuilder();
-    bar.setIndeterminate(true);
 
     try {
       int value = 0;
@@ -36,7 +39,7 @@ public class Convert implements Runnable {
       InputStream is = new FileInputStream(input);
       while ((value = is.read()) != -1) {
         i++;
-        bar.setString(String.valueOf(i) + " data sets");
+        publish(i);
         sbHex.append(String.format("%02X", value));
       }
       is.close();
@@ -46,7 +49,7 @@ public class Convert implements Runnable {
     // *** Analyze Input ***
 
     String hexaBup = sbHex.toString();
-    int count = 0;
+    count = 0;
     for (int a = 0; a < (hexaBup.length() - mtrk.length()); a++) {
       if (hexaBup.substring(a, mtrk.length() + a).equals(mtrk)) {
         count++;
@@ -65,14 +68,29 @@ public class Convert implements Runnable {
           os.write(data);
           os.close();
         } catch (IOException e) {}
-
-        bar.setString("Converted Midi: " + String.valueOf(count));
       }
     }
+
     try {
       Desktop.getDesktop().open(output.getParentFile());
     } catch (IOException e) {}
+    return null;
+  }
+  
+  @Override
+  protected void done() {
     bar.setIndeterminate(false);
+    bar.setString("Converted Midi: " + String.valueOf(count));
 
+    if (count == 0) {
+      JOptionPane.showMessageDialog(null, "Could not extract any midi file!", "No midi file found",
+          JOptionPane.ERROR_MESSAGE);
+    }
+  }
+
+  @Override
+  protected void process(List<Integer> chunks) {
+    int i = chunks.get(chunks.size() - 1);
+    bar.setString(String.valueOf(i) + " data sets");
   }
 }

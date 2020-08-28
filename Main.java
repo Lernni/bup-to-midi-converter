@@ -8,6 +8,6 @@ public class Main {
     } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
         | UnsupportedLookAndFeelException e) {
     }
-    Application app = new Application();
+    new Application();
   }
 }
